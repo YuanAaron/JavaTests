@@ -50,6 +50,8 @@
             <version>2.9.6</version>
         </dependency>
 
+        <!--下面几个依赖不是银行转账案例的init代码，而是后续的改造代码-->
+
         <!--dom4j依赖-->
         <dependency>
             <groupId>dom4j</groupId>
