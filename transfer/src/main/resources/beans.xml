@@ -3,5 +3,8 @@
 <beans>
     <!--id是对象标识，用于外部获取对象；class是类的全限定名，用于反射创建对象-->
     <bean id="accountDao" class="cn.coderap.dao.impl.JdbcAccountDaoImpl"></bean>
-    <bean id="transferService" class="cn.coderap.service.impl.TransferServiceImpl"></bean>
+    <bean id="transferService" class="cn.coderap.service.impl.TransferServiceImpl">
+        <!--约定："set"+name就是set方法名，比如setAccountDao，然后通过反射调用该方法传值-->
+        <property name="AccountDao" ref="accountDao"></property>
+    </bean>
 </beans>
