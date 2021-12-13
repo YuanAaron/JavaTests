@@ -9,12 +9,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class JdbcAccountDaoImpl implements AccountDao {
+
+    private ConnectionUtil connectionUtil;
+
+    public void setConnectionUtil(ConnectionUtil connectionUtil) {
+        this.connectionUtil = connectionUtil;
+    }
+
     @Override
     public Account queryAccountByCardNo(String cardNo) throws Exception {
         //从连接池获取连接
         //改造为：从当前线程中获取绑定的Connection连接
 //        Connection conn = DruidUtil.getInstance().getConnection();
-        Connection conn = ConnectionUtil.getInstance().getCurThreadConn();
+        Connection conn = connectionUtil.getCurThreadConn();
         String sql = "select * from account where cardNo = ?";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setString(1, cardNo);
@@ -38,7 +45,7 @@ public class JdbcAccountDaoImpl implements AccountDao {
     public int updateAccountByCardNo(Account account) throws Exception{
         //从连接池获取连接
 //        Connection conn = DruidUtil.getInstance().getConnection();
-        Connection conn = ConnectionUtil.getInstance().getCurThreadConn();
+        Connection conn = connectionUtil.getCurThreadConn();
         String sql = "update account set money = ? where cardNo = ?";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setInt(1, account.getMoney());

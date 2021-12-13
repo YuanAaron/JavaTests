@@ -22,8 +22,13 @@ public class TransferServlet extends HttpServlet {
 //    private TransferService transferService = (TransferService) BeanFactory.getBean("transferService");
 
     // 从代理工厂获取代理对象
+//    private Object obj = BeanFactory.getBean("transferService");
+//    private TransferService transferService = (TransferService) ProxyFactory.getInstance().getJdkProxy(obj);
+
+    // 从BeanFactory获取到proxyFactory的实例对象
+    private ProxyFactory proxyFactory = (ProxyFactory) BeanFactory.getBean("proxyFactory");
     private Object obj = BeanFactory.getBean("transferService");
-    private TransferService transferService = (TransferService) ProxyFactory.getInstance().getJdkProxy(obj);
+    private TransferService transferService = (TransferService) proxyFactory.getJdkProxy(obj);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

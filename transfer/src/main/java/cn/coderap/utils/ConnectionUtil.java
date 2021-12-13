@@ -5,12 +5,6 @@ import java.sql.SQLException;
 
 public class ConnectionUtil {
 
-    private ConnectionUtil() {}
-    private static ConnectionUtil connectionUtil = new ConnectionUtil();
-    public static ConnectionUtil getInstance() {
-        return connectionUtil;
-    }
-
     // ThreadLocal是用于存储当前线程独自维护的数据的载体
     public static ThreadLocal<Connection> threadLocal = new ThreadLocal<>();
 

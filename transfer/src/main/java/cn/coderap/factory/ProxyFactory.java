@@ -11,14 +11,11 @@ import java.lang.reflect.Proxy;
 
 public class ProxyFactory {
 
-    private ProxyFactory() {}
+    private TransactionManager transactionManager;
 
-    private static ProxyFactory instance = new ProxyFactory();
-
-    public static ProxyFactory getInstance() {
-        return instance;
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
-
 
     /**
      * Jdk动态代理
@@ -30,15 +27,15 @@ public class ProxyFactory {
                 Object retVal = null;
                 try {
                     // 开启事务
-                    TransactionManager.getInstance().beginTransaction();
+                    transactionManager.beginTransaction();
                     retVal = method.invoke(obj, args);
 
                     //提交事务
-                    TransactionManager.getInstance().commit();
+                    transactionManager.commit();
                 } catch (Exception e) {
                     e.printStackTrace();
                     // 回滚事务
-                    TransactionManager.getInstance().rollback();
+                    transactionManager.rollback();
                     // 抛出异常便于上层的servlet捕获以返回201
                     throw e;
                 }
@@ -60,14 +57,14 @@ public class ProxyFactory {
                 Object retVal = null;
                 try {
                     // 开启事务(关闭事务的自动提交)
-                    TransactionManager.getInstance().beginTransaction();
+                    transactionManager.beginTransaction();
                     retVal = method.invoke(obj, args);
 
                     //提交事务
-                    TransactionManager.getInstance().commit();
+                    transactionManager.commit();
                 } catch (Exception e) {
                     // 回滚事务
-                    TransactionManager.getInstance().rollback();
+                    transactionManager.rollback();
                     // 抛出异常便于上层的servlet捕获以返回201
                     throw e;
                 }

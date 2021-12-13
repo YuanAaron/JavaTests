@@ -6,23 +6,22 @@ import java.sql.SQLException;
  * 事务管理器：负责手动事务的开启、提交/回滚
  */
 public class TransactionManager {
-    private TransactionManager() {}
 
-    private static TransactionManager transactionManager = new TransactionManager();
+    private ConnectionUtil connectionUtil;
 
-    public static TransactionManager getInstance() {
-        return transactionManager;
+    public void setConnectionUtil(ConnectionUtil connectionUtil) {
+        this.connectionUtil = connectionUtil;
     }
 
     public void beginTransaction() throws SQLException {
-        ConnectionUtil.getInstance().getCurThreadConn().setAutoCommit(false);
+        connectionUtil.getCurThreadConn().setAutoCommit(false);
     }
 
     public void commit() throws SQLException {
-        ConnectionUtil.getInstance().getCurThreadConn().commit();
+        connectionUtil.getCurThreadConn().commit();
     }
 
     public void rollback() throws SQLException {
-        ConnectionUtil.getInstance().getCurThreadConn().rollback();
+        connectionUtil.getCurThreadConn().rollback();
     }
 }
