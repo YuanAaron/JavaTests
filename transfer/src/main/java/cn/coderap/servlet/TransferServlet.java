@@ -1,6 +1,7 @@
 package cn.coderap.servlet;
 
 import cn.coderap.factory.BeanFactory;
+import cn.coderap.factory.ProxyFactory;
 import cn.coderap.service.TransferService;
 import cn.coderap.service.impl.TransferServiceImpl;
 import cn.coderap.utils.JsonUtil;
@@ -18,7 +19,11 @@ public class TransferServlet extends HttpServlet {
 
     //1. 实例化service层对象
 //    private TransferService transferService = new TransferServiceImpl();
-    private TransferService transferService = (TransferService) BeanFactory.getBean("transferService");
+//    private TransferService transferService = (TransferService) BeanFactory.getBean("transferService");
+
+    // 从代理工厂获取代理对象
+    private Object obj = BeanFactory.getBean("transferService");
+    private TransferService transferService = (TransferService) ProxyFactory.getInstance().getJdkProxy(obj);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
