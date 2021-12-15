@@ -1,11 +1,12 @@
 package cn.coderap.servlet;
 
-import cn.coderap.factory.BeanFactory;
 import cn.coderap.factory.ProxyFactory;
 import cn.coderap.service.TransferService;
-import cn.coderap.service.impl.TransferServiceImpl;
 import cn.coderap.utils.JsonUtil;
 import cn.coderap.pojo.Result;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,18 +18,15 @@ import java.io.IOException;
 @WebServlet(name = "transferServlet", urlPatterns = "/transferServlet")
 public class TransferServlet extends HttpServlet {
 
-    //1. 实例化service层对象
-//    private TransferService transferService = new TransferServiceImpl();
-//    private TransferService transferService = (TransferService) BeanFactory.getBean("transferService");
+    private TransferService transferService;
 
-    // 从代理工厂获取代理对象
-//    private Object obj = BeanFactory.getBean("transferService");
-//    private TransferService transferService = (TransferService) ProxyFactory.getInstance().getJdkProxy(obj);
-
-    // 从BeanFactory获取到proxyFactory的实例对象
-    private ProxyFactory proxyFactory = (ProxyFactory) BeanFactory.getBean("proxyFactory");
-    private Object obj = BeanFactory.getBean("transferService");
-    private TransferService transferService = (TransferService) proxyFactory.getJdkProxy(obj);
+    @Override
+    public void init() throws ServletException {
+        //在servlet中获取到Spring的IoC容器
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+        ProxyFactory proxyFactory = (ProxyFactory) webApplicationContext.getBean("proxyFactory");
+        transferService = (TransferService) proxyFactory.getJdkProxy(webApplicationContext.getBean("transferService"));
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

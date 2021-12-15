@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--beans根标签里配置很多个bean子标签，每个bean子标签代表一个类的配置-->
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <!--id是对象标识，用于外部获取对象；class是类的全限定名，用于反射创建对象-->
     <bean id="accountDao" class="cn.coderap.dao.impl.JdbcAccountDaoImpl">
         <property name="ConnectionUtil" ref="connectionUtil"></property>
