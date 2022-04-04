@@ -15,4 +15,9 @@ public class TestController {
     public String test1() {
         return testService.test1();
     }
+
+    @RequestMapping("/test2")
+    public String test2() {
+        return testService.test2();
+    }
 }
