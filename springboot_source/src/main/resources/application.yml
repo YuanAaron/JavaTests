@@ -1,2 +1,6 @@
 server:
   port: 8081
+
+context:
+  initializer:
+    classes: cn.coderap.initializer.ThirdInitializer
