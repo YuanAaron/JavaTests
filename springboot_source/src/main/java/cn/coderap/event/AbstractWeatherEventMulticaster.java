@@ -1,11 +1,16 @@
 package cn.coderap.event;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public abstract class AbstractWeatherEventMulticaster implements EventMulticaster{
 
-    List<WeatherListener> listeners = new ArrayList<>();
+    @Autowired
+    List<WeatherListener> listeners;
 
     // 模版方法
     @Override

@@ -1,5 +1,8 @@
 package cn.coderap.event;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RainListener implements WeatherListener{
     @Override
     public void onWeatherEvent(WeatherEvent event) {
