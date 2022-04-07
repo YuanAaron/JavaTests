@@ -1,6 +1,7 @@
 package cn.coderap;
 
 import cn.coderap.initializer.SecondInitializer;
+import cn.coderap.listener.SecondListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,6 +11,7 @@ public class TestApplication {
 //        SpringApplication.run(TestApplication.class, args);
         SpringApplication springApplication = new SpringApplication(TestApplication.class);
         springApplication.addInitializers(new SecondInitializer());
+        springApplication.addListeners(new SecondListener());
         springApplication.run(args);
     }
 }
