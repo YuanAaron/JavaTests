@@ -4,3 +4,5 @@ server:
 context:
   initializer:
     classes: cn.coderap.initializer.ThirdInitializer
+  listener:
+    classes: cn.coderap.listener.ThirdListener
