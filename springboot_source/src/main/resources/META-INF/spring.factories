@@ -2,4 +2,4 @@ org.springframework.context.ApplicationContextInitializer=\
 cn.coderap.initializer.FirstInitializer
 
 org.springframework.context.ApplicationListener=\
-cn.coderap.listener.FirstListener
+cn.coderap.listener.FirstListener,cn.coderap.listener.FourthListener
