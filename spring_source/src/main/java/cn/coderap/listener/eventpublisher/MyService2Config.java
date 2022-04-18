@@ -8,6 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 public class MyService2Config {
@@ -19,10 +20,21 @@ public class MyService2Config {
     }
 
     @Bean
-    public ApplicationEventMulticaster applicationEventMulticaster(ConfigurableApplicationContext context) {
+    public ApplicationEventMulticaster applicationEventMulticaster(ConfigurableApplicationContext context, ThreadPoolTaskExecutor executor) {
         MyEventMulticaster myEventMulticaster = new MyEventMulticaster();
         myEventMulticaster.setContext(context);
+        // 配置线程池
+        myEventMulticaster.setExecutor(executor);
         return myEventMulticaster;
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(100);
+        return executor;
     }
 
     @Bean

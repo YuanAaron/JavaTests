@@ -6,17 +6,24 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class MyEventMulticaster implements ApplicationEventMulticaster {
 
-    private ConfigurableApplicationContext context;
     private List<GenericApplicationListener> listeners = new ArrayList<>();
+    private ConfigurableApplicationContext context;
+    private ThreadPoolTaskExecutor executor;
 
     public void setContext(ConfigurableApplicationContext context) {
         this.context = context;
+    }
+
+    public void setExecutor(ThreadPoolTaskExecutor executor) {
+        this.executor = executor;
     }
 
     @Override
@@ -62,7 +69,9 @@ public class MyEventMulticaster implements ApplicationEventMulticaster {
             // 原因：比如event是容器关闭时发出的ContextRefreshedEvent，它也是ApplicationEvent的子类，但是在调用该方法时，它不能强转为ApplicationEvent的另一个子类UserRegisterEvent
             // 解决方案：以EmailApplicationListener为例，看其接口的泛型UserRegisterEvent是否和传入的真实event类型一致，即后者能否赋值给前者。
             if (listener.supportsEventType(ResolvableType.forClass(event.getClass()))) {
-                listener.onApplicationEvent(event);
+                executor.execute(() -> {
+                    listener.onApplicationEvent(event);
+                });
             }
         }
     }
