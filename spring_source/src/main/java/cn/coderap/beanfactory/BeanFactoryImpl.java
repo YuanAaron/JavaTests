@@ -11,6 +11,9 @@ import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+import java.util.stream.Collectors;
+
 /**
  * DefaultListableBeanFactory的使用
  */
@@ -38,10 +41,10 @@ public class BeanFactoryImpl {
 //            }
         }
         // 3. 调用Bean后置处理器来解析@Autowired注解
-        for (BeanPostProcessor beanPostProcessor: beanFactory.getBeansOfType(BeanPostProcessor.class).values()) {
-            if (beanPostProcessor instanceof AutowiredAnnotationBeanPostProcessor) {
-                beanFactory.addBeanPostProcessor(beanPostProcessor);
-            }
+        for (BeanPostProcessor beanPostProcessor: beanFactory.getBeansOfType(BeanPostProcessor.class).values().stream().sorted(beanFactory.getDependencyComparator()).collect(Collectors.toList())) {
+//            if (beanPostProcessor instanceof AutowiredAnnotationBeanPostProcessor) {
+            beanFactory.addBeanPostProcessor(beanPostProcessor);
+//            }
         }
 
         // 获取容器中已注册的BeanDefinition
@@ -56,6 +59,7 @@ public class BeanFactoryImpl {
         beanFactory.preInstantiateSingletons();
 
         System.out.println(beanFactory.getBean(Bean1.class).getBean2());
+        System.out.println(beanFactory.getBean(Bean1.class).getInter());
     }
 
     @Configuration
@@ -70,12 +74,26 @@ public class BeanFactoryImpl {
         public Bean2 bean2() {
             return  new Bean2();
         }
+
+        @Bean
+        public Bean3 bean3() {
+            return  new Bean3();
+        }
+
+        @Bean
+        public Bean4 bean4() {
+            return  new Bean4();
+        }
     }
 
     static class Bean1 {
 
         @Autowired
         private Bean2 bean2;
+
+        @Autowired
+        @Resource(name = "bean4")
+        private Inter bean3;
 
         public Bean1() {
             System.out.println("构造 bean1");
@@ -84,6 +102,10 @@ public class BeanFactoryImpl {
         public Bean2 getBean2() {
             return bean2;
         }
+
+        public Inter getInter() {
+            return bean3;
+        }
     }
 
     static class Bean2 {
@@ -91,6 +113,18 @@ public class BeanFactoryImpl {
         public Bean2() {
             System.out.println("构造 bean2");
         }
+
+    }
+
+    interface Inter {
+
+    }
+
+    static class Bean3 implements Inter {
+
+    }
+
+    static class Bean4 implements Inter {
 
     }
 }
