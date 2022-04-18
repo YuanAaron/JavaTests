@@ -32,7 +32,7 @@ public class BeanFactoryImpl {
         //org.springframework.context.event.internalEventListenerProcessor对应EventListenerMethodProcessor
 
         //org.springframework.context.annotation.internalAutowiredAnnotationProcessor对应AutowiredAnnotationBeanPostProcessor（解析@Autowired和@Value注解）
-        //org.springframework.context.annotation.internalCommonAnnotationProcessor对应CommonAnnotationBeanPostProcessor（解析@Resource注解）
+        //org.springframework.context.annotation.internalCommonAnnotationProcessor对应CommonAnnotationBeanPostProcessor（解析@Resource注解、@PostConstruct、@PreDestroy）
 
         //org.springframework.context.event.internalEventListenerFactory对应DefaultEventListenerFactory
         for (BeanFactoryPostProcessor beanFactoryPostProcessor : beanFactory.getBeansOfType(BeanFactoryPostProcessor.class).values()) {
