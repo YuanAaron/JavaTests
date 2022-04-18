@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 public class MyEventMulticaster implements ApplicationEventMulticaster {
 
     private ConfigurableApplicationContext context;
-    private List<ApplicationListener> listeners = new ArrayList<>();
+    private List<GenericApplicationListener> listeners = new ArrayList<>();
 
     public void setContext(ConfigurableApplicationContext context) {
         this.context = context;
@@ -27,7 +28,15 @@ public class MyEventMulticaster implements ApplicationEventMulticaster {
     @Override
     public void addApplicationListenerBean(String listenerBeanName) {
         ApplicationListener listener = context.getBean(listenerBeanName, ApplicationListener.class);
-        listeners.add(listener);
+        System.out.println(listener);
+
+        // 获取该监听器支持的事件类型
+        ResolvableType type = ResolvableType.forClass(listener.getClass()).getInterfaces()[0].getGeneric(0);
+        System.out.println("该监听器支持的事件类型为：" + type);
+        // 将原始 ApplicationListener 封装为支持事件类型检查的 GenericApplicationListener（后者是前者的子类）
+        MyGenericApplicationListener myGenericApplicationListener = new MyGenericApplicationListener(listener, type);
+
+        listeners.add(myGenericApplicationListener);
     }
 
     @Override
@@ -48,9 +57,13 @@ public class MyEventMulticaster implements ApplicationEventMulticaster {
     // 发布事件
     @Override
     public void multicastEvent(ApplicationEvent event, ResolvableType eventType) {
-        for (ApplicationListener listener : listeners) {
+        for (GenericApplicationListener listener : listeners) {
             // 报错：Exception in thread "main" java.lang.ClassCastException: org.springframework.context.event.ContextRefreshedEvent cannot be cast to cn.coderap.listener.UserRegisterEvent
-            listener.onApplicationEvent(event);
+            // 原因：比如event是容器关闭时发出的ContextRefreshedEvent，它也是ApplicationEvent的子类，但是在调用该方法时，它不能强转为ApplicationEvent的另一个子类UserRegisterEvent
+            // 解决方案：以EmailApplicationListener为例，看其接口的泛型UserRegisterEvent是否和传入的真实event类型一致，即后者能否赋值给前者。
+            if (listener.supportsEventType(ResolvableType.forClass(event.getClass()))) {
+                listener.onApplicationEvent(event);
+            }
         }
     }
 
