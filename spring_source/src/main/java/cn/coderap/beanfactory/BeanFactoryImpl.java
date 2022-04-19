@@ -28,7 +28,7 @@ public class BeanFactoryImpl {
         AnnotationConfigUtils.registerAnnotationConfigProcessors(beanFactory);
         // 2. 获取每个BeanFactory后置处理器Bean实例，然后调用ConfigurationClassPostProcessor实例的postProcessBeanFactory方法来解析@Configuration和@Bean注解
         // 其中: 前两个是BeanFactoryPostProcessor，中间两个是BeanPostProcessor，最后一个是其他
-        // org.springframework.context.annotation.internalConfigurationAnnotationProcessor对应ConfigurationClassPostProcessor(解析@Configuration和@Bean注解)
+        // org.springframework.context.annotation.internalConfigurationAnnotationProcessor对应ConfigurationClassPostProcessor(解析@Configuration、@Bean、@ComponentScan、@Import、@ImportResource)
         //org.springframework.context.event.internalEventListenerProcessor对应EventListenerMethodProcessor
 
         //org.springframework.context.annotation.internalAutowiredAnnotationProcessor对应AutowiredAnnotationBeanPostProcessor（解析@Autowired和@Value注解）
