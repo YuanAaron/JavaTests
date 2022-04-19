@@ -58,6 +58,8 @@ public class BeanPostProcessorImpl {
         private Bean8 bean8;
         private String home;
         private Bean9 bean9;
+        @Autowired
+        private Bean10 bean10;
 
         public Bean7() {
             System.out.println("构造Bean7...");
@@ -89,12 +91,12 @@ public class BeanPostProcessorImpl {
 
         @PostConstruct
         public void init() {
-            System.out.println("afterPropertiesSet 生效");
+            System.out.println("@PostConstruct 生效");
         }
 
         @PreDestroy
         public void destroy() {
-            System.out.println("destroy 生效");
+            System.out.println("@PreDestroy 生效");
         }
 
         @Override
@@ -103,6 +105,7 @@ public class BeanPostProcessorImpl {
                     "bean8=" + bean8 +
                     ", home='" + home + '\'' +
                     ", bean9=" + bean9 +
+                    ", bean10=" + bean10 +
                     '}';
         }
     }
