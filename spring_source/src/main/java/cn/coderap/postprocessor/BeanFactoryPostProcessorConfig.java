@@ -3,6 +3,7 @@ package cn.coderap.postprocessor;
 import cn.coderap.component.Bean13;
 import cn.coderap.component.Bean6;
 import cn.coderap.component.mapper.Mapper1;
+import cn.coderap.component.mapper.Mapper2;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -42,5 +43,19 @@ public class BeanFactoryPostProcessorConfig {
         dataSource.setUsername("root");
         dataSource.setPassword("Kexin!00");
         return dataSource;
+    }
+
+    @Bean
+    public MapperFactoryBean<Mapper1> mapper1(SqlSessionFactory sqlSessionFactory) {
+        MapperFactoryBean<Mapper1> factoryBean = new MapperFactoryBean<>(Mapper1.class);
+        factoryBean.setSqlSessionFactory(sqlSessionFactory);
+        return factoryBean;
+    }
+
+    @Bean
+    public MapperFactoryBean<Mapper2> mapper2(SqlSessionFactory sqlSessionFactory) {
+        MapperFactoryBean<Mapper2> factoryBean = new MapperFactoryBean<>(Mapper2.class);
+        factoryBean.setSqlSessionFactory(sqlSessionFactory);
+        return factoryBean;
     }
 }
