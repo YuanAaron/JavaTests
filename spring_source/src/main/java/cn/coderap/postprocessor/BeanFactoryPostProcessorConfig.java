@@ -1,5 +1,6 @@
 package cn.coderap.postprocessor;
 
+import cn.coderap.component.Bean13;
 import cn.coderap.component.Bean6;
 import cn.coderap.component.mapper.Mapper1;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -18,6 +19,10 @@ import javax.sql.DataSource;
 //@MapperScan("cn.coderap.component.mapper")
 public class BeanFactoryPostProcessorConfig {
 
+    public Bean13 bean13() {
+        return new Bean13();
+    }
+
     @Bean
     public Bean6 bean6() {
         return new Bean6();
@@ -30,7 +35,7 @@ public class BeanFactoryPostProcessorConfig {
         return sqlSessionFactoryBean;
     }
 
-    @Bean
+    @Bean(initMethod = "init")
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/test");

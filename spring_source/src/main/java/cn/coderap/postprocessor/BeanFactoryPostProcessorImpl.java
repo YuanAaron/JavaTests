@@ -26,6 +26,8 @@ public class BeanFactoryPostProcessorImpl {
         // ----------------------注释掉ConfigurationClassPostProcessor和MapperScannerConfigurer，探究两者的实现原理---------------
         // 1. 解析@ComponentScan
         context.registerBean(ComponentScanPostProcessor.class);
+        // 2. 解析@Bean
+        context.registerBean(AtBeanPostProcessor.class);
 
         // 初始化容器：执行BeanFactory后置处理器，添加（执行）bean后置处理器，初始化所有单例
         context.refresh();
