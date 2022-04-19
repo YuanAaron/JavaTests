@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Bean12 {
     public Bean12() {
-        log.info("Bean11 被 Spring 管理啦！");
+        log.info("Bean12 被 Spring 管理啦！");
     }
 }
