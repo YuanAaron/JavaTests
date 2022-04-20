@@ -1,11 +1,8 @@
 package cn.coderap.postprocessor;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.type.MethodMetadata;
@@ -15,9 +12,15 @@ import org.springframework.core.type.classreading.MetadataReader;
 import java.io.IOException;
 import java.util.Set;
 
-public class AtBeanPostProcessor implements BeanFactoryPostProcessor {
+public class AtBeanPostProcessor implements BeanDefinitionRegistryPostProcessor {
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+    }
+
+    // 传进来的是DefaultListableBeanFactory
+    @Override
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         try {
             CachingMetadataReaderFactory factory = new CachingMetadataReaderFactory(); // 用于读取每个resource上的元信息
             MetadataReader reader = factory.getMetadataReader(new ClassPathResource("cn/coderap/postprocessor/BeanFactoryPostProcessorConfig.class"));
@@ -33,10 +36,7 @@ public class AtBeanPostProcessor implements BeanFactoryPostProcessor {
                     builder.setInitMethodName(initMethod);
                 }
                 AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
-                if (configurableListableBeanFactory instanceof DefaultListableBeanFactory) {
-                    DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)configurableListableBeanFactory;
-                    beanFactory.registerBeanDefinition(method.getMethodName(),beanDefinition);
-                }
+                registry.registerBeanDefinition(method.getMethodName(),beanDefinition);
             }
         } catch (IOException e) {
             e.printStackTrace();

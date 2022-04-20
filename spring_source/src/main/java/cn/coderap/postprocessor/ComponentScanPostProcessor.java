@@ -3,10 +3,7 @@ package cn.coderap.postprocessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanNameGenerator;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -17,9 +14,11 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.stereotype.Component;
 
-public class ComponentScanPostProcessor implements BeanFactoryPostProcessor{
+public class ComponentScanPostProcessor implements BeanDefinitionRegistryPostProcessor {
+
+    // 传进来的DefaultListableBeanFactory
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         try {
             // BeanFactoryPostProcessorConfig上是否有@ComponentScan
             ComponentScan componentScan = AnnotationUtils.findAnnotation(BeanFactoryPostProcessorConfig.class, ComponentScan.class);
@@ -42,11 +41,8 @@ public class ComponentScanPostProcessor implements BeanFactoryPostProcessor{
                             // 根据className生成beanDefinition
                             AbstractBeanDefinition beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(className).getBeanDefinition();
                             // 根据beanDefinition生成beanName
-                            if (configurableListableBeanFactory instanceof DefaultListableBeanFactory) {
-                                DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) configurableListableBeanFactory;
-                                String beanName = beanNameGenerator.generateBeanName(beanDefinition, beanFactory);
-                                beanFactory.registerBeanDefinition(beanName,beanDefinition);
-                            }
+                            String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry);
+                            registry.registerBeanDefinition(beanName,beanDefinition);
                         }
                     }
                 }
@@ -54,5 +50,10 @@ public class ComponentScanPostProcessor implements BeanFactoryPostProcessor{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
     }
 }
