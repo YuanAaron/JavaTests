@@ -28,6 +28,8 @@ public class BeanFactoryPostProcessorImpl {
         context.registerBean(ComponentScanPostProcessor.class);
         // 2. 解析@Bean
         context.registerBean(AtBeanPostProcessor.class);
+        // 3. 扫描basePackage下的所有Mapper
+        context.registerBean(MapperScanPostProcessor.class);
 
         // 初始化容器：执行BeanFactory后置处理器，添加（执行）bean后置处理器，初始化所有单例
         context.refresh();
