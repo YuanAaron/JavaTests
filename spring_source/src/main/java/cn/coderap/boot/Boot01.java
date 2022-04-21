@@ -1,12 +1,14 @@
 package cn.coderap.boot;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Set;
  */
 @Configuration
 public class Boot01 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println("1. 获取 BeanDefinition 源");
         // 1.1 来自启动类（主源）
         SpringApplication springApplication = new SpringApplication(Boot01.class);
@@ -22,6 +24,12 @@ public class Boot01 {
         springApplication.setSources(Set.of("classpath:beans02.xml"));
         System.out.println("2. 推断应用类型");
         // 根据类路径下的jar推断是非web、servlet、reactive中的哪一种应用类型，以创建对应的ApplicationContext
+        // 2.1 如果存在"org.springframework.web.reactive.DispatcherHandler"，但不存在"org.springframework.web.servlet.DispatcherServlet"，则为Reactive；
+        // 2.2 否则，如果{ "javax.servlet.Servlet","org.springframework.web.context.ConfigurableWebApplicationContext" }中有一个不存在，就不是web应用；
+        // 2.3 否则，就是Servlet。
+        Method method = WebApplicationType.class.getDeclaredMethod("deduceFromClasspath"); // 包级私有，所以需要反射
+        method.setAccessible(true);
+        System.out.println("\t应用类型为: " + method.invoke(null));
         System.out.println("3. ApplicationContext 初始化器");
         // 初始化器用于对ApplicationContext进行扩展
         System.out.println("4. 监听器与事件");
