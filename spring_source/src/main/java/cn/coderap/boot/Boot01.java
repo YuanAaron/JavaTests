@@ -7,6 +7,8 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,9 +45,13 @@ public class Boot01 {
             }
         });
         System.out.println("4. 监听器与事件");
-        // 用于监听Spring Boot启动过程中的重要事件
+        // 用于监听Spring Boot启动过程中的重要事件(由于该监听器可以监听任何ApplicationEvent事件，因此run方法发布事件都会回调这里的OnApplicationEvent方法)
+        springApplication.addListeners(event -> System.out.println("\t事件为: " + event.getClass()));
         System.out.println("5. 主类推断");
         // 推断处运行main方法的类，比如这里的Boot01
+        method = SpringApplication.class.getDeclaredMethod("deduceMainApplicationClass");
+        method.setAccessible(true);
+        System.out.println("\t主类为：" + method.invoke(springApplication));
 
         ConfigurableApplicationContext context = springApplication.run(args);
 
