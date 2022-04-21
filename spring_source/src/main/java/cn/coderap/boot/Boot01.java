@@ -1,12 +1,16 @@
 package cn.coderap.boot;
 
+import cn.coderap.component.Bean13;
+import cn.coderap.lifecycle.MyBeanPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -31,7 +35,13 @@ public class Boot01 {
         method.setAccessible(true);
         System.out.println("\t应用类型为: " + method.invoke(null));
         System.out.println("3. ApplicationContext 初始化器");
-        // 初始化器用于对ApplicationContext进行扩展
+        // 初始化器用于对ApplicationContext进行扩展（调用发生在ApplicationContext创建之后，但refreshContext之前）
+        springApplication.addInitializers(applicationContext -> {
+            if (applicationContext instanceof GenericApplicationContext) {
+                GenericApplicationContext genericApplicationContext = (GenericApplicationContext) applicationContext;
+                genericApplicationContext.registerBean("bean13", Bean13.class);
+            }
+        });
         System.out.println("4. 监听器与事件");
         // 用于监听Spring Boot启动过程中的重要事件
         System.out.println("5. 主类推断");
@@ -53,5 +63,10 @@ public class Boot01 {
     @Bean
     public ServletWebServerFactory servletWebServerFactory() {
         return new TomcatServletWebServerFactory();
+    }
+
+    @Bean
+    public MyBeanPostProcessor myBeanPostProcessor() {
+        return new MyBeanPostProcessor();
     }
 }
