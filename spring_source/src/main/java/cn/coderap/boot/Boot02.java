@@ -33,7 +33,7 @@ public class Boot02 {
             GenericApplicationContext context = new GenericApplicationContext();
             publisher.contextPrepared(context); // Spring容器创建完成、初始化器执行完毕
             publisher.contextLoaded(context); // 各种来源的BeanDefinition都加载完毕
-            context.refresh();
+            context.refresh(); // 添加各种Bean后置处理器，实例化所有的单例Bean
             publisher.started(context); //Spring容器初始化完成（refresh完毕）
             publisher.running(context); // Spring Boot启动完成
 
