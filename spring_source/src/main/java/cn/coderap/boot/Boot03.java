@@ -4,6 +4,7 @@ import cn.coderap.component.Bean13;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.boot.*;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
+import org.springframework.boot.context.event.EventPublishingRunListener;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
@@ -52,8 +53,11 @@ public class Boot03 {
         System.out.println(">>>5. 通过ConfigFileApplicationListener进行env后处理增强");
         // 通过EnvironmentPostProcessor对env进行后置增强，application.yml对应的源是通过这一步添加到env中的
         System.out.println(env.getProperty("server.port"));
-        ConfigFileApplicationListener listener = new ConfigFileApplicationListener();
-        listener.postProcessEnvironment(env, springApplication);
+//        ConfigFileApplicationListener listener = new ConfigFileApplicationListener();
+//        listener.postProcessEnvironment(env, springApplication);
+        // ConfigFileApplicationListener监听器监听到该事件后，回调监听器的方法
+        EventPublishingRunListener eventPublishingRunListener = new EventPublishingRunListener(springApplication, args);
+        eventPublishingRunListener.environmentPrepared(env);
         System.out.println("增强后的源...");
         for (PropertySource<?> propertySource : env.getPropertySources()) {
             System.out.println(propertySource);
