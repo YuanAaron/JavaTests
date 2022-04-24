@@ -3,6 +3,8 @@ package cn.coderap.boot;
 import cn.coderap.component.Bean13;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.boot.*;
+import org.springframework.boot.context.config.ConfigFileApplicationListener;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
@@ -10,7 +12,11 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.ResourcePropertySource;
 
 import java.util.Arrays;
 
@@ -24,6 +30,35 @@ public class Boot03 {
 
         System.out.println(">>>2.封装启动参数 args");
         DefaultApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+
+        StandardEnvironment env = new StandardEnvironment(); // 这里只会涉及到systemProperties和systemEnvironment
+        env.getPropertySources().addLast(new ResourcePropertySource(new ClassPathResource("step3.properties")));
+        System.out.println(">>>3.添加Environment命令行参数");
+        env.getPropertySources().addFirst(new SimpleCommandLinePropertySource(args));
+        System.out.println(">>>4.ConfigurationPropertySources处理");
+        // 将step3.properties中的各种命名形式统一成中间横杠分隔，如果没有这个，user.middle-name和user.last-name将取不到值
+        ConfigurationPropertySources.attach(env);
+        System.out.println(env.getProperty("user.first-name"));
+        System.out.println(env.getProperty("user.middle-name"));
+        System.out.println(env.getProperty("user.last-name"));
+        // 各种源中变量的优先级（前面有就用前面的，前面没有用后面的）：
+        // 先通过ConfigurationPropertySources.attach(env);添加的源configurationProperties，
+        // 再通过addFirst添加的源commandLineArgs(可以通过Program parameter自定义配置)，再systemProperties(可以通过VM options自定义配置)，
+        // 再systemEnvironment，再通过addLast添加的源class path resource [step3.properties]，
+        // 最后是通过EnvironmentPostProcessor后置处理器添加的applicationConfig（application.yml对应的源是通过这一步添加到env中的）
+        for (PropertySource<?> propertySource : env.getPropertySources()) {
+            System.out.println(propertySource);
+        }
+        System.out.println(">>>5. 通过ConfigFileApplicationListener进行env后处理增强");
+        // 通过EnvironmentPostProcessor对env进行后置增强，application.yml对应的源是通过这一步添加到env中的
+        System.out.println(env.getProperty("server.port"));
+        ConfigFileApplicationListener listener = new ConfigFileApplicationListener();
+        listener.postProcessEnvironment(env, springApplication);
+        System.out.println("增强后的源...");
+        for (PropertySource<?> propertySource : env.getPropertySources()) {
+            System.out.println(propertySource);
+        }
+        System.out.println(env.getProperty("server.port"));
 
         System.out.println(">>>8.创建容器");
         GenericApplicationContext context = createApplicationContext(WebApplicationType.SERVLET);

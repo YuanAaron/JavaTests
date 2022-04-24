@@ -1,3 +1,6 @@
 java:
   home: /Library/Java/JavaVirtualMachines/jdk1.8.0_231.jdk/Contents/Home
   version: 1.8.0_231
+
+server:
+  port: 8081
