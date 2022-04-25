@@ -1,4 +1,4 @@
-package cn.coderap.boot;
+package org.springframework.boot;
 
 import cn.coderap.component.Bean13;
 import lombok.Data;
@@ -17,13 +17,16 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * 运行参数用于演示runner回调：--server.port=8080 debug
@@ -79,6 +82,15 @@ public class Boot03 {
 //        System.out.println(user);
         env.getPropertySources().addLast(new ResourcePropertySource(new ClassPathResource("step6.properties")));
         Binder.get(env).bind("spring.main", Bindable.ofInstance(springApplication));
+
+        System.out.println(">>>7.打印banner");
+        SpringApplicationBannerPrinter printer = new SpringApplicationBannerPrinter(new DefaultResourceLoader(), new SpringBootBanner());
+        // 测试更换为其他文字banner
+//        env.getPropertySources().addLast(new MapPropertySource("custom1", Map.of("spring.banner.location","banner1.txt")));
+        // 测试更换为图片banner
+//        env.getPropertySources().addLast(new MapPropertySource("custom2", Map.of("spring.banner.image.location","banner2.png")));
+        printer.print(env, Boot03.class, System.out);
+        System.out.println(SpringBootVersion.getVersion()); //来自spring-boot:2.2.2.RELEASE jar包下的MANIFEST.MF文件
 
         System.out.println(">>>8.创建容器");
         GenericApplicationContext context = createApplicationContext(WebApplicationType.SERVLET);
