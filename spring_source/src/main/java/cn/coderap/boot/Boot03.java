@@ -1,10 +1,14 @@
 package cn.coderap.boot;
 
 import cn.coderap.component.Bean13;
+import lombok.Data;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.boot.*;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.context.event.EventPublishingRunListener;
+import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
@@ -63,6 +67,18 @@ public class Boot03 {
             System.out.println(propertySource);
         }
         System.out.println(env.getProperty("server.port"));
+
+        System.out.println(">>>6.绑定spring.main前缀的key value到SpringApplication对象");
+        // @ConfigurationProperties的底层实现原理
+        // 绑定到一个还未创建的对象上
+//        User user = Binder.get(env).bind("user", User.class).get();
+//        System.out.println(user);
+        // 绑定到一个已创建的对象上
+//        User user = new User();
+//        Binder.get(env).bind("user", Bindable.ofInstance(user));
+//        System.out.println(user);
+        env.getPropertySources().addLast(new ResourcePropertySource(new ClassPathResource("step6.properties")));
+        Binder.get(env).bind("spring.main", Bindable.ofInstance(springApplication));
 
         System.out.println(">>>8.创建容器");
         GenericApplicationContext context = createApplicationContext(WebApplicationType.SERVLET);
@@ -156,6 +172,13 @@ public class Boot03 {
                 }
             };
         }
+    }
+
+    @Data
+    static class User {
+        private String firstName;
+        private String middleName;
+        private String lastName;
     }
 
 }
