@@ -4,3 +4,8 @@ java:
 
 server:
   port: 8081
+  servlet:
+    session:
+      # 用于测试BeanForSession，但并非10s后就立即回调preDestroy方法，而是等大约1min左右
+      # 因为tomcat最快每隔1min检测一次session是否失效
+      timeout: 10s
