@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="cn.coderap.aop.Aspect2"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="cn.coderap.aop.Service2"/>
+            <include within="cn.coderap.aop.Aspect2"/>
+        </weaver>
+    </aspects>
+</aspectj>
