@@ -5,11 +5,14 @@ package cn.coderap.aop.aop2;
  */
 public class $Proxy0 implements JdkProxyDemo.Foo {
 
+    private JdkProxyDemo.InvocationHandler h;
+
+    public $Proxy0(JdkProxyDemo.InvocationHandler h) {
+        this.h = h;
+    }
+
     @Override
     public void foo() {
-        // 1.功能增强
-        System.out.println("before...");
-        // 2.调用目标
-        new JdkProxyDemo.Target().foo();
+        h.invoke();
     }
 }

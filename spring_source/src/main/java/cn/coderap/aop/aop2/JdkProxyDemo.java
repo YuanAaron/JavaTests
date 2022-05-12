@@ -13,8 +13,20 @@ public class JdkProxyDemo {
         }
     }
 
+    interface InvocationHandler {
+        void invoke();
+    }
+
     public static void main(String[] args) {
-        $Proxy0 proxy = new $Proxy0();
+        $Proxy0 proxy = new $Proxy0(new InvocationHandler() {
+            @Override
+            public void invoke() {
+                // 1.功能增强
+                System.out.println("before...");
+                // 2.调用目标
+                new JdkProxyDemo.Target().foo();
+            }
+        });
         proxy.foo();
     }
 }
