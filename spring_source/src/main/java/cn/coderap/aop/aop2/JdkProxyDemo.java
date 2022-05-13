@@ -7,7 +7,7 @@ public class JdkProxyDemo {
 
     interface Foo {
         void foo();
-        void bar();
+        String bar();
     }
 
     static class Target implements Foo {
@@ -17,13 +17,14 @@ public class JdkProxyDemo {
         }
 
         @Override
-        public void bar() {
+        public String bar() {
             System.out.println("target: bar");
+            return "target: return";
         }
     }
 
     interface InvocationHandler {
-        void invoke(Method method, Object[] args) throws Throwable;
+        Object invoke(Method method, Object[] args) throws Throwable;
     }
 
     public static void main(String[] args) {
@@ -31,14 +32,15 @@ public class JdkProxyDemo {
 
         $Proxy0 proxy = new $Proxy0(new InvocationHandler() {
             @Override
-            public void invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+            public Object invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
                 // 1.功能增强
                 System.out.println("before...");
                 // 2.调用目标
-                method.invoke(target, args);
+                Object ret = method.invoke(target, args);
+                return ret;
             }
         });
         proxy.foo();
-        proxy.bar();
+        System.out.println(proxy.bar());
     }
 }
