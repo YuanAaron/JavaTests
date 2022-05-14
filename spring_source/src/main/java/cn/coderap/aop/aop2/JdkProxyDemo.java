@@ -24,7 +24,7 @@ public class JdkProxyDemo {
     }
 
     interface InvocationHandler {
-        Object invoke(Method method, Object[] args) throws Throwable;
+        Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
     }
 
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class JdkProxyDemo {
 
         $Proxy0 proxy = new $Proxy0(new InvocationHandler() {
             @Override
-            public Object invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+            public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
                 // 1.功能增强
                 System.out.println("before...");
                 // 2.调用目标
