@@ -1,13 +1,15 @@
 package cn.coderap.aop.aop2;
 
 import cn.coderap.aop.aop2.JdkProxyDemo.*;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 
 /**
  * 模拟Jdk动态代理代理类源码
  */
-public class $Proxy0 implements Foo {
+public class $Proxy0 extends Proxy implements Foo {
 
     static Method foo;
     static Method bar;
@@ -21,10 +23,8 @@ public class $Proxy0 implements Foo {
         }
     }
 
-    private InvocationHandler h;
-
     public $Proxy0(InvocationHandler h) {
-        this.h = h;
+        super(h);
     }
 
     @Override

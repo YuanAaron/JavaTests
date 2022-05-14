@@ -1,5 +1,6 @@
 package cn.coderap.aop.aop2;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -23,9 +24,9 @@ public class JdkProxyDemo {
         }
     }
 
-    interface InvocationHandler {
-        Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
-    }
+//    interface InvocationHandler {
+//        Object invoke(Object proxy, Method method, Object[] args) throws Throwable;
+//    }
 
     public static void main(String[] args) {
         Target target = new Target();
