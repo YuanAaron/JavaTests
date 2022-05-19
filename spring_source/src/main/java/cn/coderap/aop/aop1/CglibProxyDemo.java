@@ -4,6 +4,7 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 /**
@@ -22,7 +23,7 @@ public class CglibProxyDemo {
         }
     }
 
-    public static void main(String[] params) {
+    public static void main(String[] params) throws IOException {
         Target target = new Target();
 
         // 第一个参数：代理类的父类
@@ -40,7 +41,9 @@ public class CglibProxyDemo {
             return ret;
         });
 
+        System.out.println(proxyInstance.getClass().getName()); // Arthas使用条件一
         String ret = proxyInstance.foo();
         System.out.println(ret);
+        System.in.read(); // Arthas使用条件二
     }
 }
