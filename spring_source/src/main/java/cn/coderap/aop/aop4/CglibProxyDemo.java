@@ -32,7 +32,9 @@ public class CglibProxyDemo {
             @Override
             public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
                 System.out.println("before...");
-                return method.invoke(target, args);
+//                return method.invoke(target, args); //反射调用
+//                return methodProxy.invoke(target, args); //内部没有使用反射
+                return methodProxy.invokeSuper(proxy, args); //内部没有使用反射
             }
         });
         System.out.println(proxyInstance.foo());
