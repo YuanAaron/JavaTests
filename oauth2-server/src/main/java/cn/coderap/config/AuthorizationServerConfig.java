@@ -20,6 +20,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
  * 2. 密码模式
  * 2.1 postman(POST): http://localhost:9001/oauth/token，Basic认证中用户名和密码分别为admin和admin123456，body参数username=zhangsan、password=123456、grant_type=password
  * 2.2 postman(GET): 127.0.0.1:9001/user/getCurrentUser，Header中添加Authorization=Bearer 2.1中得到的access_token
+ * 2.3 refresh_token
+ *     postman(POST): http://localhost:9001/oauth/token，Basic认证中用户名和密码分别为admin和admin123456，body参数grant_type=password、refresh_token=2.1中得到的refresh_token
+ *
  */
 @EnableAuthorizationServer
 @Configuration
