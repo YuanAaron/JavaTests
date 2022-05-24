@@ -1,5 +1,6 @@
 package cn.coderap.config;
 
+import cn.coderap.component.JwtTokenEnhancer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -19,5 +20,10 @@ public class JwtTokenStoreConfig {
         JwtAccessTokenConverter jwtTokenConverter = new JwtAccessTokenConverter();
         jwtTokenConverter.setSigningKey("test_key"); //jwt使用的密钥
         return jwtTokenConverter;
+    }
+
+    @Bean
+    public JwtTokenEnhancer jwtTokenEnhancer() {
+        return new JwtTokenEnhancer();
     }
 }
