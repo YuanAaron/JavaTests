@@ -11,11 +11,11 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private JwtTokenEnhancer jwtTokenEnhancer;
 
+    /**
+     * 获取密钥需要身份认证（使用单点登录时必须配置）
+     * @param security
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.tokenKeyAccess("isAuthenticated()");
+    }
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
@@ -67,7 +77,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 //配置刷新token的有效期
                 .refreshTokenValiditySeconds(86400)
                 //配置redirect_uri，用于授权成功后跳转
-                .redirectUris("https://www.baidu.com");
+//                .redirectUris("https://www.baidu.com");
+                // 单点登录时配置
+                .redirectUris("http://127.0.0.1:9002/login")
+                // 自动授权配置
+                .autoApprove(true);
     }
 
     /**

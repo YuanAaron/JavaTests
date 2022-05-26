@@ -1,0 +1,23 @@
+server:
+  port: 9002
+  servlet:
+    session:
+      cookie:
+        name: OAUTH2-CLIENT_SESSIONID # 防止Cookie冲突，冲突会导致登录验证不通过
+spring:
+  application:
+    name: oauth2-client
+
+oauth2-server-url: http://127.0.0.1:9001
+
+security:
+  oauth2:
+    client:
+      client-id: admin
+      client-secret: admin123456
+      user-authorization-uri: ${oauth2-server-url}/oauth/authorize
+      access-token-uri: ${oauth2-server-url}/oauth/token
+      scope: all
+    resource:
+      jwt:
+        key-uri: ${oauth2-server-url}/oauth/token_key
