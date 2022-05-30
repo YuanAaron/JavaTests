@@ -1,0 +1,20 @@
+@user=user
+@password=9ac9f025-ab94-4cfd-a07c-bb36ffaf0e9d
+
+###
+GET http://localhost:8080/api/greeting HTTP/1.1
+Authorization: Basic {{user}} {{password}}
+
+###
+POST  http://localhost:8080/api/greeting?name=zhangsan HTTP/1.1
+Authorization: Basic {{user}} {{password}}
+Content-Type: application/json
+
+{
+    "gender": "男",
+    "idNo": "164125xxx"
+}
+
+###
+PUT  http://localhost:8080/api/greeting/zhangsan HTTP/1.1
+Authorization: Basic {{user}} {{password}}
