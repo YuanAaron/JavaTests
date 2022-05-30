@@ -19,7 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginProcessingUrl("/login") // 对应表单中的action
                         .permitAll())
                 .httpBasic(Customizer.withDefaults())
-                .csrf(Customizer.withDefaults());
+                .csrf(Customizer.withDefaults())
+                .logout(logout -> logout.logoutUrl("/perform_logout")); // 对应表单中的action
     }
 
     @Override

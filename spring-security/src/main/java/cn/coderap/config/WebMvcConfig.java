@@ -22,6 +22,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         // 建立/login、定制登录页login.html之间的映射关系
         registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/").setViewName("index");
         registry.setOrder(HIGHEST_PRECEDENCE);
     }
 }

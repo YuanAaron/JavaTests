@@ -111,5 +111,25 @@ spring:
 
 参考定制登录页的代码
 
-## csrf logout rememberMe
+## CSRF攻击
+
+![image-20220530155512978](https://cdn.jsdelivr.net/gh/YuanAaron/BlogImage@master//2022/image-20220530155512978.png)
+
+CSRF攻击根源：请求不是从已登录的站点（正常站点）发出的，而是从恶意站点发出。
+
+防止受到CSRF攻击的方式：CSRF Token，即由服务端生成并设置到你的浏览器的Cookie中，客户端每次都会从Cookie中把该token读取出来，服务端要求你的每个请求都要携带这个token，提交到服务端后，服务端会比较该token与服务端session中的token是否一致。
+
+CSRF攻击对于无状态应用来说是无效的，对于session类应用需要预防一下。比如对于我们将要实现的前后端分离，它就是无状态的，因为访问每个API都需要携带token，而恶意网站无法获取token，所以它对CSRF攻击是天然免疫的。
+
+## rememberMe功能
+
+解决session过期后用户仍然无需登录，可以直接访问的问题。
+
+Spring Security提供的rememberMe的原理：使用Cookie存储用户名、过期时间以及一个hash值，其中hash1=md5(用户名+过期时间+密码+key)。当session过期后，如果时间超过了该Cookie中的过期时间，那么就跳转到登录页面；如果没有，根据用户名从数据库中查出米密码，然后服务端按照md5(用户名+过期时间+密码+key)得到一个hash2值，比较提交的hash1和服务端计算得到的hash1，如果两者一致，就无需登录。
+
+具体参考rememberMe代码
+
+## logout
+
+参考登出的代码
 
