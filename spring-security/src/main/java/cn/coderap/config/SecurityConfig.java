@@ -1,11 +1,15 @@
 package cn.coderap.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 //@EnableWebSecurity
 @EnableWebSecurity(debug = true) // 输出额外的日志信息（在日志中搜索security debugger即可）
@@ -20,7 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(Customizer.withDefaults())
-                .logout(logout -> logout.logoutUrl("/perform_logout")); // 对应表单中的action
+                .logout(logout -> logout.logoutUrl("/perform_logout")) // 对应表单中的action
+                .rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(30*24*3600).rememberMeCookieName("someKeyToRemember"));
     }
 
     @Override
@@ -29,5 +34,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().mvcMatchers("/public/**")
                 // 忽略常见静态资源的位置，一般js、css、图片等存放在固定位置
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user")
+                .password(passwordEncoder().encode("123456"))
+                .roles("ADMIN");
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
