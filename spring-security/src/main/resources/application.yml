@@ -30,9 +30,9 @@ server:
 spring:
   application:
     name: spring-security
-#  messages:
-#    basename: messages
-#    encoding: UTF-8
+  messages:
+    basename: messages
+    encoding: UTF-8
   security:
     user:
       name: user
