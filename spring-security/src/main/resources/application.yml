@@ -6,6 +6,8 @@ logging:
     org:
       springframework:
         security: debug
+    cn:
+      coderap: debug
 
 #management:
 #  endpoint:

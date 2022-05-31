@@ -133,3 +133,58 @@ Spring Security提供的rememberMe的原理：使用Cookie存储用户名、过�
 
 参考登出的代码
 
+## 定制登录（成功/失败）和登出后的处理
+
+登录成功后的处理：AuthenticationSuccessHandler
+
+登录失败后的处理：AuthenticationFailureHandler
+
+登出成功后的处理：LogoutSuccessHandler
+
+自己的实现参考该部分代码，Spring Security内置相关功能实现可以查看SimpleUrlAuthenticationSuccessHandler和SimpleUrlAuthenticationFailureHandler，具体如下：
+
+```java
+// SimpleUrlAuthenticationSuccessHandler
+public void onAuthenticationSuccess(HttpServletRequest request,
+                                    HttpServletResponse response, Authentication authentication)
+    																throws IOException, ServletException {
+
+    handle(request, response, authentication);
+  	// 清除认证阶段临时存储在session中的东西
+    clearAuthenticationAttributes(request);
+}
+
+// AbstractAuthenticationTargetUrlRequestHandler
+protected void handle(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
+  	// 记录原本要访问的Url
+		String targetUrl = determineTargetUrl(request, response, authentication);
+
+		if (response.isCommitted()) {
+			logger.debug("Response has already been committed. Unable to redirect to "
+					+ targetUrl);
+			return;
+		}
+		
+  	// 认证成功后，重定向回原来的Url
+		redirectStrategy.sendRedirect(request, response, targetUrl);
+}
+
+// SimpleUrlAuthenticationSuccessHandler
+protected final void clearAuthenticationAttributes(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+
+		if (session == null) {
+			return;
+		}
+
+		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+}
+```
+
+
+
+
+
+
+
